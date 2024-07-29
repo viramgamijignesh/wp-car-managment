@@ -249,3 +249,61 @@ function car_list_shortcode($atts) {
     return ob_get_clean();
 }
 add_shortcode('car_list', 'car_list_shortcode');
+
+function create_dummy_data() {
+    $dummy_data = get_option('car_management_dummy_data');
+    if ($dummy_data) {
+        return;
+    }
+
+    
+    $makes = ['Toyota', 'Ford', 'BMW'];
+    foreach ($makes as $make) {
+        wp_insert_term($make, 'make');
+    }
+
+   
+    $models = ['Corolla', 'Focus', '3 Series'];
+    foreach ($models as $model) {
+        wp_insert_term($model, 'model');
+    }
+
+    
+    $years = ['2020', '2021', '2022'];
+    foreach ($years as $year) {
+        wp_insert_term($year, 'lyear');
+    }
+
+    
+    $fuel_types = ['Petrol', 'Diesel', 'Electric'];
+    foreach ($fuel_types as $fuel_type) {
+        wp_insert_term($fuel_type, 'fuel_type');
+    }
+
+    
+    $cars = [
+        ['name' => 'Toyota Car', 'make' => 'Toyota', 'model' => 'Corolla', 'lyear' => '2020', 'fuel_type' => 'Petrol'],
+        ['name' => 'Ford Car', 'make' => 'Ford', 'model' => 'Focus', 'lyear' => '2021', 'fuel_type' => 'Diesel'],
+        ['name' => 'BMW Car', 'make' => 'BMW', 'model' => '3 Series', 'lyear' => '2022', 'fuel_type' => 'Electric'],
+    ];
+
+    foreach ($cars as $car) {
+        $post_id = wp_insert_post([
+            'post_title' => $car['name'],
+            'post_type' => 'car',
+            'post_status' => 'publish',
+        ]);
+
+        if ($post_id) {
+            wp_set_post_terms($post_id, [$car['make']], 'make');
+            wp_set_post_terms($post_id, [$car['model']], 'model');
+            wp_set_post_terms($post_id, [$car['lyear']], 'lyear');
+            wp_set_post_terms($post_id, [$car['fuel_type']], 'fuel_type');
+            
+            
+        }
+    }
+
+    update_option('car_management_dummy_data', 1);
+}
+add_action('init', 'create_dummy_data');
