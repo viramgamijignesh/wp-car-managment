@@ -306,4 +306,4 @@ function create_dummy_data() {
 
     update_option('car_management_dummy_data', 1);
 }
-add_action('init', 'create_dummy_data');
+//add_action('init', 'create_dummy_data');
